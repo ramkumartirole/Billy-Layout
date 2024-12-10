@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <title>Van Configurator</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f7f8fa;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    
+      .bvv-model-page {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        height: 90vh;
+        gap: 20px;
+      }
+    
+      .bbv-canvas-model {
+        flex: 1;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        align-content: center;
+       
+
+      }
+    
+      #bbv-santa-canvas {
+        
+        width: 100%;
+        height: 100%;
+        cursor:grab;
+      }
+    
+      .bbv-model {
+        width: 20%;
+        background-color: #f1f5f8;
+        border: 1px solid #d1dce1;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        overflow-y: auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    
+      .bbv-btns {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 12px;
+      }
+    
+      .bvv-interior {
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #ffffff;
+        border: 1px solid #d1dce1;
+        transition: background-color 0.01s, transform 0.01s, box-shadow 0.01s;
+        text-align: center;
+        font-weight: 500;
+        color: #555;
+      }
+    
+      .bvv-interior:hover {
+        background-color: #5d5e5f;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      }
+    
+      #loader {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+    
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+    
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    
+      #landscape-message {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        margin-top: 20px;
+        text-align: center;
+        display: none;
+      }
+    
+      @media (max-width: 768px) {
+        .bvv-model-page {
+          flex-direction: column;
+          height: auto;
+        }
+    
+        .bbv-canvas-model {
+          height: 60vh;
+        }
+    
+        .bbv-model {
+          width: 100%;
+        }
+    
+        #landscape-message {
+          display: block;
+        }
+      }
+    
+      .popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 100;
+        display: none;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      #resetParts {
+  color: #999;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Enable the reset button when it's not disabled */
+#resetParts:not([disabled]) {
+  color: #000000;
+
+  opacity: 1;
+  cursor: pointer;
+}
+#resetParts:not([disabled]):hover {
+  color: #FFFFFF;
+  opacity: 1;
+  cursor: pointer;
+}
+
+    </style>
+    
+    <script type="module" crossorigin src="/index-Ch6pa0FS.js"></script>
+  </head>
+  <body>
+    <div id="loader">
+      <div class="spinner"></div>
+      <p id="landscape-message">
+        Please view in landscape mode <br>for a better user experience
+      </p>
+    </div>
+
+    <div class="bvv-model-page">
+      <div class="bbv-canvas-model">
+        <canvas id="bbv-santa-canvas"></canvas>
+        <div id="popup-message" class="popup">
+          <p>You can rotate the model and zoom in/out. Try it!</p>
+        </div>
+        <div id="rotate-popup" style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px; background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 5px; font-size: 14px;">
+          Drag the mouse or touch the screen to rotate the van to see all parts.
+        </div>
+        
+      </div>
+
+      <div class="bbv-model">
+        <div class="bbv-btns">
+          
+          <button id="togglePart4and8" class="bvv-interior">Rear View</button>
+         
+          <button id="togglePart4and8and6" class="bvv-interior">Top View</button>
+          <button id="togglePart7" class="bvv-interior">Right View</button>
+          
+          <button id="togglePart9" class="bvv-interior">Left View</button>
+          <button id="resetParts" class="bvv-interior">Reset</button>
+          
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
